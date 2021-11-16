@@ -49,14 +49,20 @@
 			$("#currentPage").val(currentPage)
 			$("form").attr("method" , "POST").attr("action" , "/user/listUser").submit();
 		}
-		
-		
+				
 		//============= "검색"  Event  처리 =============	
 		 $(function() {
 			 //==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
-			 //$( "button.btn.btn-default" ).on("click" , function() {
-			//	fncGetUserList(1);
-			//});
+			$( "button:contains('검색')" ).on("click" , function() {
+				fncGetList(1);
+			});
+			 
+			$("#searchKeyword").keypress(function(e) { 
+			    if (e.keyCode == 13){
+			    	fncGetList(1);
+			    }    
+			});
+
 		 });
 		
 		
@@ -143,7 +149,7 @@
 		    </div>
 		    
 		    <div class="col-md-6 text-right">
-			    <form class="form-inline" name="detailForm">
+			    <form class="form-inline" name="detailForm" >
 			    
 				  <div class="form-group">
 				    <select class="form-control" name="searchCondition" >
@@ -154,7 +160,7 @@
 				  
 				  <div class="form-group">
 				    <label class="sr-only" for="searchKeyword">검색어</label>
-				    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어"
+				    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어" autocomplete="off"
 				    			 value="${! empty search.searchKeyword ? search.searchKeyword : '' }"  >
 				  </div>
 				  

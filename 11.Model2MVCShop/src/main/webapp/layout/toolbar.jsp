@@ -10,7 +10,7 @@
 	
 	<div class="container">
 	       
-		<a class="navbar-brand" href="/index.jsp">Model2 MVC Shop</a>
+		<a class="navbar-brand" href="/index.jsp">My Shop</a>
 		
 		<!-- toolBar Button Start //////////////////////// -->
 		<div class="navbar-header">
@@ -32,7 +32,7 @@
 	             
 	              <!--  회원관리 DrowDown -->
 	              <li class="dropdown">
-	                     <a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+	                     <a  href="#####" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 	                         <span >회원관리</span>
 	                         <span class="caret"></span>
 	                     </a>
@@ -66,7 +66,7 @@
 	                 
 	              <!-- 구매관리 DrowDown -->
 	              <li class="dropdown">
-	                     <a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+	                     <a  href="#####" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 	                         <span >상품구매</span>
 	                         <span class="caret"></span>
 	                     </a>
@@ -77,13 +77,13 @@
 	                           <li><a href="#">구매이력조회</a></li>
 	                         </c:if>
 	                         
-	                         <li><a href="#">최근본상품</a></li>
+	                         <!--<li><a href="#">최근본상품</a></li>-->
 	                         <li class="divider"></li>
-	                         <li><a href="#">etc..</a></li>
+	                         <li><a href="#####">etc..</a></li>
 	                     </ul>
 	                 </li>
 	                 
-	                 <li><a href="#">etc...</a></li>
+	                 <li><a href="#####">etc...</a></li>
 	             </ul>
 	             
 	             <ul class="nav navbar-nav navbar-right">

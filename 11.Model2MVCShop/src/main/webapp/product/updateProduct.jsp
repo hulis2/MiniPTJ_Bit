@@ -120,7 +120,8 @@ function fncAddProduct(){
 		<div class="form-group">
 			<label for="fileName" class="col-sm-offset-1 col-sm-3 control-label">상품이미지</label>
 			<div class="col-sm-2">
-				<input type="text" class="form-control" id="fileName" name="fileName" value="${product.fileName}">
+				<input type="hidden" class="form-control" id="fileName" name="fileName" value="${product.fileName}">
+				<img src="/images/uploadFiles/${product.fileName}"/>
 		  	</div>
 		</div>
 		

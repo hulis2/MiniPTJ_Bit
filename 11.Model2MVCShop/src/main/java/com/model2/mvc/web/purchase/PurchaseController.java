@@ -163,7 +163,7 @@ public class PurchaseController {
 		User user=(User)session.getAttribute("user");
 		String buyerId = user.getUserId();
 		
-		if(search.getCurrentPage() ==0 ){
+		if(search.getCurrentPage() == 0 ){
 			search.setCurrentPage(1);
 		}
 		

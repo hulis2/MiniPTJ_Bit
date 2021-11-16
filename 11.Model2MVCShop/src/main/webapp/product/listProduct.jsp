@@ -25,33 +25,74 @@
 	  body {
 	      padding-top : 50px;
 	  }
+	   
+	  img {
+		  width: 200px;
+		  height: 200px;
+	  }
+
 	</style>
 
 <title>상품 관리</title>
 
 <script type="text/javascript">
+	
+	var loading = false; 
+	var currentPage = 1;
 
 	function fncGetList(currentPage) {
 		$("#currentPage").val(currentPage)
 		$("form").attr("method", "POST").attr("action", "/product/listProduct?menu=${param.menu}").submit();
 	}
 
-	$(function() {
-				
-		$( ".ct_list_pop td:nth-child(2)" ).css("color" , "red");
-		$("h7").css("color" , "red");
-				
-		$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
-		
-		$(".link").css("color", "blue");
-		
-		$(".link").on("click", function() {
+	  $(function() {
+		    
+		  /* $("#searchKeyword").autocomplete({
+			  	
+	        	 source : function( request, response ) {
+	        		 alert("1234");
+	        		 $.ajax({
+							url : "/product/json/autoProduct/"+$("#searchCondition").val()+"/"+$("#searchKeyword").val() ,
+							method : "GET" ,
+							dataType : "json" ,
+							headers : {
+								"Accept" : "application/json",
+								"Content-Type" : "application/json"
+							},
+							success : function(JSONData , status) {
+								
+								var search = JSONData.search;
+							    var list = JSONData.list;
+							    var availableTags ="";
+							    
+								if($("#searchCondition").val() === "0"){
+									alert("0000");
+									for(var i=0; i< list.length; i++) {
+										availableTags += list[i].prodNo+",";						
+									}
+								}else if($("#searchCondition").val() === "1"){
+									alert("1111");
+									for(var i=0; i< list.length; i++) {
+										availableTags += list[i].prodName+",";						
+									}
+								}else{
+									alert("2222");
+									for(var i=0; i< list.length; i++) {
+										availableTags += list[i].price+",";						
+									}
+								}
+									
+		                        	response(availableTags);
+		                    
+		               }
+		            });
+	        	 }
+	         });  */
+	 
+		$(  ".image"  ).hover( function() {
 			
-			self.location = "/product/getProduct?prodNo="+$(this).attr("prodNo")+"&menu="+$(this).attr("menu");
-		});
-		
-		$(  "td:nth-child(6) > i"  ).on("click" , function() {
-			var prodNo =  $(this).next().val();
+			var prodNo =  $(this).data("prodno");
+			
 			$.ajax( 
 					{
 						url : "/product/json/getProduct/"+prodNo ,
@@ -63,29 +104,143 @@
 						},
 						success : function(JSONData , status) {
 
-							var displayValue = "<h6>"
+							var displayValue ="<h6>"
 														+"상품번호  : "+JSONData.prodNo+"<br/>"
 														+"상 품 명  : "+JSONData.prodName+"<br/>"
 														+"상품상세정보: "+JSONData.prodDetail+"<br/>"
 														+"제조일자   : "+JSONData.manuDate+"<br/>"
 														+"가   격  : "+JSONData.price+"<br/>"
 														+"</h6>";
-							$("h6").remove();
-							$( "#"+prodNo+"" ).html(displayValue);
+							
+							$(".image").attr('title',displayValue); 							
+						
 						}
 				});
 					
-	});
-		
-		
-		$(".shipping").on("click", function() {
-			self.location = "/purchase/updateTranCodeByProd?prodNo="+$(this).attr("prodNo")+"&tranCode="+$(this).attr("proTranCode");
 		});
-
-	});
+	
+		 $( "button:contains('검색')" ).on("click" , function() {
+				fncGetList(1);
+			});
+		 
+		 $("#searchKeyword").keypress(function(e) { 
+			    if (e.keyCode == 13){
+			    	fncGetList(1);
+			    }    
+			});
+				
+		$("body").on("click",".prod-btn", function() {
+			self.location = "/product/getProduct?prodNo="+$(this).data("prodno")+"&menu="+$(this).data("menu");
+		});
+		
+				
+		$("body").on("click",".baesong", function() {
+			self.location = "/purchase/updateTranCodeByProd?prodNo="+$(this).data("prodno")+"&tranCode="+$(this).data("protrancode");
+		});
+		
+		$("img").tooltip({
+			 content: function() {
+			        return $(this).prop('title');
+			 }
+		 });
+	 });
+	 
+		 $(function() {
+					 
+			 window.onscroll = function(e){ 
+				 
+				 if((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+					
+					currentPage++;
+					loading = true; 
+					
+					$.ajax({
+							url : "/product/json/listProduct/"+currentPage ,
+							method : "GET" ,
+							dataType : "json" ,
+							headers : {
+								"Accept" : "application/json",
+								"Content-Type" : "application/json"
+							},
+							success : function(JSONData , status) {
+								
+								$.each(JSONData, function(i, product) {
+								
+									var append_node ="";
+									
+									append_node += "<span>"
+									append_node += "<span class='col-sm-6 col-md-3' >"
+									append_node += "<div class='thumbnail'>"
+								    append_node += "<div align='center' class='image' data-prodNo="+product.prodNo+">" 
+									append_node += "<img src='/images/uploadFiles/"+product.fileName+"'" + "onerror=this.src='/images/others/no_image.jpg' alt='상품이미지' >"
+									append_node += "</div>"
+									append_node += "<div class='caption'>"
+									append_node += "<h3>"+product.prodName+"</h3>"
+									append_node += "</div>"
+									append_node += "<span class='col-sm-6'>"
+									append_node += product.price+"원"
+									append_node += "</span>"
+																		
+										if("${user.role}" === "user" && "${param.menu}" === "search"){
+											if(product.proTranCode == null ){
+												 append_node += "<span class='col-sm-3'>"
+												 append_node += "</span>"
+												 append_node += "<span>"
+												 append_node += "<a href='#' class='btn btn-primary prod-btn' role='button' data-prodNo='"+product.prodNo+"' data-menu='${param.menu}' >구매</a>"
+												 append_node += "</span>"
+											}else if(product.proTranCode != null ){
+												 append_node += "<span class='col-sm-3'>"
+												 append_node += "</span>" 
+												 append_node += "<span>"
+											     append_node += "<input type=button class='btn btn-danger' value='품절'/>"
+											     append_node += "</span>"
+											}
+										}else if("${user.role}" === "admin" && "${param.menu}" === "manage"){
+											if(product.proTranCode == null ){
+												 append_node += "<span class='col-sm-3'>"
+												 append_node += "</span>" 
+												 append_node += "<span>"
+												 append_node += "<a href='#' class='btn btn-primary prod-btn' role='button' data-prodNo='"+product.prodNo+"' data-menu='${param.menu}' >수정</a>"
+												 append_node += "</span>"
+											}else if(product.proTranCode === "0" ){
+												 append_node += "<span style='padding:5px'>"
+												 append_node += "<a href='#' class='btn btn-primary prod-btn' role='button' data-prodNo='"+product.prodNo+"' data-menu='${param.menu}' >수정</a>"
+												 append_node += "</span>"
+												 append_node += "<span>"
+											     append_node += "<a href='###' class='btn btn-primary baesong' role='button' data-prodNo='"+product.prodNo+"' data-proTranCode='1' >배송</a>"
+											     append_node += "</span>"
+											}else{
+												 append_node += "<span class='col-sm-3'>"
+												 append_node += "</span>"
+												 append_node += "<span>"
+												 append_node += "<input type=button class='btn btn-danger' value='품절'/>"
+												 append_node += "</span>"
+											}
+										}else{
+											append_node += "<span class='col-sm-3'>"
+											append_node += "</span>"
+											append_node += "<span>"
+											append_node += "<a href='#' class='btn btn-primary prod-btn' role='button' data-prodNo='"+product.prodNo+"' data-menu='${param.menu}' >확인</a>"
+											append_node += "</span>"
+										}
+									
+									append_node += "</div>"
+									append_node += "</span>"
+									append_node += "</span>"
+																
+									$(".list").append(append_node);
+									
+								});
+							}				
+					}); 
+						loading = false;  
+					}
+				}
+		 });
+	
 </script>
 </head>
-
+<body>
 	<jsp:include page="/layout/toolbar.jsp" />
 
 	<div class="container">
@@ -104,7 +259,7 @@
 			    <form class="form-inline" name="detailForm">
 			    
 				  <div class="form-group">
-				    <select class="form-control" name="searchCondition" >
+				    <select class="form-control" name="searchCondition" id="searchCondition">
 						<option value="0" ${! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
 						<option value="1" ${! empty search.searchCondition && search.searchCondition==1 ? "selected" : "" }>상품명</option>
 						<option value="2" ${! empty search.searchCondition && search.searchCondition==2 ? "selected" : "" }>상품가격</option>
@@ -113,7 +268,7 @@
 				  
 				  <div class="form-group">
 				    <label class="sr-only" for="searchKeyword">검색어</label>
-				    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어"
+				    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어" autocomplete="off"
 				    			 value="${! empty search.searchKeyword ? search.searchKeyword : '' }"  >
 				  </div>
 				  
@@ -126,112 +281,110 @@
 	    	</div>
 	</div>
 	
-	<table class="table table-hover table-striped" >
-	   <thead>
-          <tr>
-            <th align="center">No</th>
-            <th align="left" >상품명</th>
-            <th align="left">가격</th>
-            <th align="left">등록일</th>
-            <th align="left">현재상태</th>
-            <th align="left">간략정보</th>
-          </tr>
-        </thead>
-        
-        <tbody>
-        	<c:set var="i" value="0" />
-			<c:forEach var="product" items="${list}">
-				<c:set var="i" value="${ i+1 }" />
-			<tr class="ct_list_pop">
-				<td align="center">${ i }</td>
-		
-				
+	<c:forEach var="product" items="${list}">
 		<c:choose>
 			<c:when test="${user.role =='user' and param.menu =='search'}">
-				<c:choose>
-					<c:when test="${empty product.proTranCode}">
-					<td align="left"  title="Click : 상품정보 확인" class="link" name="user" prodNo="${product.prodNo}" menu="${param.menu}">
-						${product.prodName}
-					</td>
-					</c:when>
-					<c:otherwise>
-					<td align="left">
-						${product.prodName}
-					</td>
-					</c:otherwise>
-				</c:choose>
+				<span>
+  					<span class="col-sm-6 col-md-3" >
+    					<div class="thumbnail">
+    						<div title="" align="center" class="image" data-prodNo="${product.prodNo}">
+      							<img src="/images/uploadFiles/${product.fileName}" onerror="this.src='/images/others/no_image.jpg'"  alt="상품이미지" >
+      						</div>
+      							<div class="caption">
+        							<h3>${product.prodName}</h3>
+        						</div>
+        						<span class="col-sm-9">
+        							${product.price}원
+        						</span>
+        						<c:choose>
+        							<c:when test="${empty product.proTranCode}">
+        								<span>
+        									<a href="#" class="btn btn-primary prod-btn" role="button" data-prodNo="${product.prodNo}" data-menu="${param.menu}" >구매</a>
+        								</span>
+        							</c:when>
+        							<c:otherwise>
+        								<span>
+        									<input type=button class="btn btn-danger" value="품절"/>
+        								</span>
+        							</c:otherwise>
+        						</c:choose>
+     					</div>
+ 					 </span>
+				</span>
 			</c:when>
-			<c:when test="${user.role =='admin' and param.menu =='manage'}">
-				<c:choose>
-					<c:when test="${empty product.proTranCode}">
-					<td align="left" title="Click : 상품정보 수정" class="link" name="admin" prodNo="${product.prodNo}" menu="${param.menu}">
-						${product.prodName}
-					</td>
-					</c:when>
-					<c:otherwise>
-					<td align="left">
-						${product.prodName}
-					</td>
-					</c:otherwise>
-				</c:choose>
-			</c:when>
-			<c:otherwise>
-			<td align="left" title="Click : 상품정보 확인" class="link" name="otherwise" prodNo="${product.prodNo}" menu="${param.menu}">
-				${product.prodName}
-			</td>
-			</c:otherwise>
-		</c:choose>			
 			
-		
-		<td align="left">${product.price}</td>
-	
-		<td align="left">${product.regDate}</td>
-		
-		
-		<c:choose>
-			<c:when test="${user.role == 'user' and param.menu == 'search'}">
-			<td align="left">
-				${empty product.proTranCode ? "판매중" : "재고없음" }
-			</td>
+			<c:when test="${user.role =='admin' and param.menu =='manage'}">
+				<span>
+  					<span class="col-sm-6 col-md-3" >
+    					<div class="thumbnail">
+    						<div title="" align="center" class="image" data-prodNo="${product.prodNo}">
+      							<img src="/images/uploadFiles/${product.fileName}" onerror="this.src='/images/others/no_image.jpg'"  alt="상품이미지" >
+      						</div>
+      							<div class="caption">
+        							<h3>${product.prodName}</h3>
+        						</div>
+        						<div>
+        						<span class="col-sm-6">
+        							${product.price}원
+        						</span>
+        						<c:choose>
+        							<c:when test="${empty product.proTranCode}">
+        								<span class="col-sm-3">
+        								</span>
+        								<span>
+        									<a href="#" class="btn btn-primary prod-btn" role="button" data-prodNo="${product.prodNo}" data-menu="${param.menu}" >수정</a>
+        								</span>
+        							</c:when>	
+        							<c:when test="${product.proTranCode == 0}">
+        								<span>
+        									<a href="#" class="btn btn-primary" role="button" data-prodNo="${product.prodNo}" data-menu="${param.menu}" >수정</a>
+        								</span>	
+        								<span>
+        									<a href="###" class="btn btn-primary baesong" role="button" data-prodNo="${product.prodNo}" data-proTranCode="1" >배송</a>
+        								</span>
+        							</c:when>
+        							<c:otherwise>
+        								<span class="col-sm-3">
+        								</span>
+        								<span >
+        									<input type=button class="btn btn-danger" value="품절"/>
+        								</span>
+        							</c:otherwise>
+        						</c:choose>
+        						</div>
+     					</div>
+ 					 </span>
+				</span>
 			</c:when>
-			<c:when test="${user.role == 'admin' and param.menu == 'manage'}">
-				<c:choose>
-					<c:when test="${empty product.proTranCode}">
-					<td align="left">
-						판매중
-					</td>
-					</c:when>
-					<c:when test="${product.proTranCode==0}">
-					<td align="left" class="shipping" prodNo = "${product.prodNo}" proTranCode="1">	
-						구매완료 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 배송하기
-					</td>
-					</c:when>
-					<c:otherwise>
-					<td align="left">
-						${product.proTranCode ==1 ? "배송중" : "재고없음" }
-					</td>
-					</c:otherwise>
-				</c:choose>
-			</c:when>
+			
 			<c:otherwise>
-			<td align="left">
-				${empty product.proTranCode ? "판매중" : "재고없음" }
-			</td>
+				<span>
+  					<span class="col-sm-6 col-md-3" >
+    					<div class="thumbnail">
+    						<div title="" align="center" class="image" data-prodNo="${product.prodNo}">
+      							<img src="/images/uploadFiles/${product.fileName}" onerror="this.src='/images/others/no_image.jpg'"  alt="상품이미지" >
+      						</div>
+      							<div class="caption">
+        							<h3>${product.prodName}</h3>
+        						</div>
+        						<span class="col-sm-9">
+        							${product.price}원
+        						</span>
+        						<span>
+        							<a href="#" class="btn btn-primary prod-btn" role="button" data-prodNo="${product.prodNo}" data-menu="${param.menu}" >확인</a>
+        						</span>
+        				</div>
+ 					 </span>
+				</span>
 			</c:otherwise>
 		</c:choose>
-			
-			<td>
-				<i class="glyphicon glyphicon-ok" id= "${product.prodNo}" ></i>
-				<input type="hidden" value="${product.prodNo}">
-				
-			</td>
-		      
-        </tr>
-		</c:forEach>
-	</tbody>
-</table>
-
+		
+	
+	</c:forEach>
+<div class="list">
 </div>
-	<jsp:include page="../common/pageNavigator_new.jsp"/>
+</div>
+
+ 	<%-- <jsp:include page="../common/pageNavigator_new.jsp"/> --%> 
 </body>
 </html>

@@ -17,7 +17,6 @@
 	<script src="/javascript/bootstrap-dropdownhover.min.js"></script>
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-	<link rel="stylesheet" href="/resources/demos/style.css">
 	<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script> 
 	<style>
 	  body {
@@ -53,7 +52,7 @@
 			return;
 		}
 	
-		$("form").attr("method","POST").attr("action","/product/addProduct").submit();
+		$("form").attr("method","POST").attr("action","/product/addProduct").attr("enctype","multipart/form-data").submit();
 		
 	}
 	
@@ -88,7 +87,7 @@
 			<h5 class="text-muted">판매상품의 <strong class="text-danger">정보를 입력</strong>해 주세요.</h5>
 		</div>
 		
-		<form class="form-horizontal">
+		<form class="form-horizontal" >
 		
 			<div class="form-group">
 				<label for="prodName" class="col-sm-offset-1 col-sm-3 control-label">상  품  명</label>
@@ -122,9 +121,9 @@
 			</div>
 			
 			<div class="form-group">
-				<label for="fileName" class="col-sm-offset-1 col-sm-3 control-label">상 품 이 미 지</label>
+				<label for="file" class="col-sm-offset-1 col-sm-3 control-label">상 품 이 미 지</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id="fileName" name="fileName"> 
+					<input type="file" class="btn btn-default" role="button" name="file" />
 				</div>
 			</div>
 			

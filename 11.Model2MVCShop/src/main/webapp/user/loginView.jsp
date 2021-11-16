@@ -23,7 +23,13 @@
     	 body >  div.container{ 
         	border: 3px solid #D6CDB7;
             margin-top: 10px;
-        }
+            }
+            
+         img {
+				 width: 500px;
+				 height: 500px;
+			  }
+        
     </style>
     
     <!--  ///////////////////////// JavaScript ////////////////////////// -->
@@ -73,7 +79,7 @@
 	<!-- ToolBar Start /////////////////////////////////////-->
 	<div class="navbar  navbar-default">
         <div class="container">
-        	<a class="navbar-brand" href="/index.jsp">Model2 MVC Shop</a>
+        	<a class="navbar-brand" href="/index.jsp">My Shop</a>
    		</div>
    	</div>
    	<!-- ToolBar End /////////////////////////////////////-->	
@@ -84,14 +90,14 @@
 		<div class="row">
 		
 			<div class="col-md-6">
-					<img src="/images/logo-spring.png" class="img-rounded" width="100%" />
+					<img style="padding : 20px" src="/images/uploadFiles/login.jpg" class="img-rounded" width="100%" />
 			</div>
 	   	 	
 	 	 	<div class="col-md-6">
 	 	 	
 		 	 	<br/><br/>
 				
-				<div class="jumbotron">	 	 	
+				<div class="jumbotron" style="padding-top : 100px; padding-right : 50px">	 	 	
 		 	 		<h1 class="text-center">·Î &nbsp;&nbsp;±× &nbsp;&nbsp;ÀÎ</h1>
 
 			        <form class="form-horizontal">

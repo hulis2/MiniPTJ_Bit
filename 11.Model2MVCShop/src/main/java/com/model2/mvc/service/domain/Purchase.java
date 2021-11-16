@@ -39,7 +39,7 @@ public class Purchase {
 		return divyDate;
 	}
 	public void setDivyDate(String divyDate) {
-		this.divyDate = divyDate;
+		this.divyDate = divyDate.substring(0, 10);
 	}
 	public String getDivyRequest() {
 		return divyRequest;

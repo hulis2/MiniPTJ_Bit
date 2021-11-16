@@ -47,15 +47,15 @@
 	<!--  아래의 내용은 http://getbootstrap.com/getting-started/  참조 -->	
    	<div class="container ">
       <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <h1>Model2MVCShop </h1>
-        <p>J2SE , DBMS ,JDBC , Servlet & JSP, Java Framework , HTML5 , UI Framework 학습 후 Mini-Project 진행</p>
+      <div class="alert alert-info text-center">
+        <h1>My Shop </h1>
+        <p>열심히 하자</p>
      </div>
     </div>
 
 	<!-- 참조 : http://getbootstrap.com/css/   : container part..... -->
 	<div class="container text-center">
-        <h1><img src="/images/uploadFiles/1623952386564.jpg"></h1>
+        <h1><img src="/images/uploadFiles/main.jpg"></h1>
     </div>
 
 </body>
